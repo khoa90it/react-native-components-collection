@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import RNMapView from 'react-native-maps';
 import { throttle } from 'lodash';
 import { zoomLevel, BoundaryBox, createSuperCluster, maxZoomDelta } from './lib';
@@ -24,7 +24,7 @@ class MapView extends PureComponent {
 
   _setRef = ref => {
     this.map = ref;
-    this.map.zoomOnMarker = this.zoomOnMarker;
+    this.map && (this.map.zoomOnMarker = this.zoomOnMarker)
     this.props.setRef && this.props.setRef(this.map);
   };
 
@@ -47,7 +47,7 @@ class MapView extends PureComponent {
   _createClusters = () => {
     this.hasSuperClusterLoaded = false;
     if (!this.superCluster) {
-      this.superCluster = createSuperCluster();
+      this.superCluster = createSuperCluster(Platform.isPad? 16: 18);
     }
     const GeoJSONs = [];
     const others = [];
@@ -99,7 +99,10 @@ class MapView extends PureComponent {
         key={clusterId}
         id={clusterId}
         cluster={cluster}
-        onPress={this.props.onClusterPress}
+        onPress={(cluster)=>{
+          let child = this.superCluster.getChildren(cluster.properties.cluster_id)
+          this.props.onClusterPress({cluster,child})
+        }}
       />
     );
   };
