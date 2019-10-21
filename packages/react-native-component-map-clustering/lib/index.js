@@ -17,14 +17,14 @@ const _zoom = fraction => {
   return Math.floor(Math.log(1 / fraction) / Math.LN2);
 };
 
-const ZOOM_MAX = 15;
-const NODE_SIZE = 128;
+export let ZOOM_MAX = 19;
+const NODE_SIZE = 150;
 const RADIUS = 60;
 
-export const createSuperCluster = () =>
+export const createSuperCluster = (ZOOM = ZOOM_MAX) =>
   superCluster({
     radius: RADIUS,
-    maxZoom: ZOOM_MAX,
+    maxZoom: ZOOM - 1,
     nodeSize: NODE_SIZE,
   });
 
